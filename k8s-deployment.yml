@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blitchat
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blitchat
+  template:
+    metadata:
+      labels:
+        app: blitchat
+    spec:
+      containers:
+      - name: blitchat
+        image: your-dockerhub-username/blitchat:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATABASE_URL
+          value: postgresql://user:password@db:5432/blitchat
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blitchat
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: blitchat
